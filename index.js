@@ -24,7 +24,12 @@ async function run() {
         res.json(result)  
     })
     app.get('/bookings', async(req, res)=>{
-        const cursor = bookingCollection.find({})
+        const email = req.query.email;
+        let query = {};
+        if(email){
+          query={email:email}
+        } 
+        const cursor = bookingCollection.find(query)
         const result = await cursor.toArray();
         res.json(result)  
     })
@@ -43,6 +48,21 @@ async function run() {
         const booking = req.body; 
         const result = await bookingCollection.insertOne(booking)
         res.json(result) 
+    })
+    app.post('/packages', async(req, res)=>{ 
+      const newPackage = req.body;
+      const result = await packageCollection.insertOne(newPackage);
+      res.json(result)
+    })
+
+    // delete operation 
+
+    app.delete('/bookings/:id', async(req, res)=>{
+        const id = req.params.id;
+        const query = {_id:ObjectId(id)}
+        const result = await bookingCollection.deleteOne(query)
+        res.json(result)
+        console.log(result)
     })
 
 
